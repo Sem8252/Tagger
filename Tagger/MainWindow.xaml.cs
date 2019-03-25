@@ -38,16 +38,13 @@ namespace Tagger
         {
             browser.ShowDialog();
             path = browser.SelectedPath;
-            PathLabel.Content = path;
+            PathLabel.Text = path;
             Rescan();
         }
 
         private void AddTagButton_Click(object sender, RoutedEventArgs e)
         {
-            Rescan();
-            if (!TextBoxTag.Text.Contains('%'))
-                FileProcessor.AddTag(files, TextBoxTag.Text);
-            Rescan();
+            addTagKey();
         }
 
         private void DeleteTagButton_Click(object sender, RoutedEventArgs e)
@@ -64,15 +61,15 @@ namespace Tagger
 
         protected void Rescan()
         {
-            TagListComboBox.Items.Clear();
-            files = FileProcessor.ScanDirectories(path, CheckBoxSubDirectory.IsChecked.Value);
-            //if(FileProcessor.isCopyNames(files))
-            //{
-            //    System.Windows.MessageBox.Show("Копия!");
-            //}
-            tags = FileProcessor.GetTagsFromDirectory(files);
-            foreach (var tag in tags)
-                TagListComboBox.Items.Add(tag);
+            try
+            {
+                TagListComboBox.Items.Clear();
+                files = FileProcessor.ScanDirectories(path, CheckBoxSubDirectory.IsChecked.Value);
+                tags = FileProcessor.GetTagsFromDirectory(files);
+                foreach (var tag in tags)
+                    TagListComboBox.Items.Add(tag);
+            }
+            catch { }
         }
 
         private void CheckBoxSubDirectory_Checked(object sender, RoutedEventArgs e)
@@ -84,18 +81,6 @@ namespace Tagger
         {
             Rescan();
         }
-
-        //private void ButtonLarge_Click(object sender, RoutedEventArgs e)
-        //{
-        //    var largeFiles = files.FindAll(x => x.FullName.Contains("large"));
-        //    foreach (FileInfo file in largeFiles)
-        //    {
-        //        int indexOfLarge = file.FullName.IndexOf("large");
-        //        string newName = file.FullName.Remove(indexOfLarge - 1, 6);
-        //        file.CopyTo(newName);
-        //        file.Delete();
-        //    }
-        //}
 
         private void ButtonFix_Click(object sender, RoutedEventArgs e)
         {
@@ -134,6 +119,32 @@ namespace Tagger
                 file.Delete();
             }
             Rescan();
+        }
+
+        private void TextBoxTag_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                addTagKey();
+            }
+        }
+
+        private void addTagKey()
+        {
+            Rescan();
+            if (!(TextBoxTag.Text.Contains('%') || (TextBoxTag.Text == "")))
+                FileProcessor.AddTag(files, TextBoxTag.Text);
+            Rescan();
+        }
+
+        private void PathLabel_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                path = PathLabel.Text;
+                try { Rescan(); }
+                catch { }
+            }
         }
     }
 }
