@@ -22,14 +22,11 @@ namespace Tagger
 
     class Tags : Tag
     {
-        public static string[] dataFromFile; 
-        public static bool flagOfReading = false;
-        public static int fileSize = 0;
-        Tags[] listOfTags;
         private Tags(int size)
         {
             listOfTags = new Tags[size];
         }
+
         public tags this[string index]                  // индексатор, где для удобства нахождения, индекс соответствует названию самого тега
         {
             get
@@ -42,41 +39,9 @@ namespace Tagger
             }
         }
 
-        public static void addTag(string tag, string parent, string[] childrens)
+        private readFromFile()
         {
-            File.AppendText("AllTags.txt") = tag + ';' + parent + ';' + writeChildrens(childrens);
-            flagOfReading = false;
-        }
-
-        private static void readFromFile()
-        {
-            dataFromFile = File.ReadAllLines("All_Tags.txt");
-            fileSize = dataFromFile.Length;
-        }
-
-        private static string writeChildrens(string[] childrens)
-        {
-            string allChilds;
-            foreach (string child in childrens)
-            {
-                allChilds += child + ',';
-            }
-            return allChilds;
-        }
-        public static Tag takeTag(string nameOfTag)
-        {
-            readFromFile();
-            if (flagOfReading = false)
-            {
-                Tags tags = new Tags();
-                foreach (string line in dataFromFile)
-                {
-                    var elementsOfLine = line.Split(';');
-                    var elemenstsOfChildrens = elementsOfLine[3].Split(',');
-                    tags[elementsOfLine[0]] = new Tag { elementsOfLine[0], elementsOfLine[1], elemenstsOfChildrens };
-                }
-                flagOfReading = true;
-            }
+            
         }
     }
 }
