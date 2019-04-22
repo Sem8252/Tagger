@@ -61,24 +61,28 @@ namespace Tagger
             return tags;
         }
 
-        public static void WriteIntoFile(string path, Tags tags)
+        public static void WriteIntoFile(string path, Tags tags, int del = 0)
         {
-            string[] textBufer = new string[sizeOfTags];
+            string[] textBufer = new string[sizeOfTags + del];
             string childrenBufer = null;
+            int numOfLine = 0;
             for (int pos = 0; pos < sizeOfTags; pos++)
             {
-                int i = 0;
-                foreach (var child in tags[pos].children)
+                if (tags[pos] != null)
                 {
-                    childrenBufer += child;
-                    i++;
-                    if (i != tags[pos].children.Length)
+                    int i = 0;
+                    foreach (var child in tags[pos].children)
                     {
-                        childrenBufer += ',';
+                        childrenBufer += child;
+                        i++;
+                        if (i != tags[pos].children.Length)
+                        {
+                            childrenBufer += ',';
+                        }
                     }
+                    textBufer[numOfLine++] = tags[pos].tag + ';' + childrenBufer + ';' + tags[pos].parent;
+                    childrenBufer = null;
                 }
-                textBufer[pos] = tags[pos].tag + ';' + childrenBufer + ';' + tags[pos].parent;
-                childrenBufer = null;
             }
             File.WriteAllLines(path, textBufer);
         }
@@ -93,23 +97,40 @@ namespace Tagger
         public static void DeleteTag(string path, string tag)
         {
             Tags tags = ReadFromFile(path, 0);
-            Tag tagD = FindTag(tags, tag);
-            tagD = null;
-            sizeOfTags--;
-            WriteIntoFile(path, tags);
+            tags[FindTag(tags, tag)] = null;
+            WriteIntoFile(path, tags, -1);
         }
 
-        public static Tag FindTag(Tags tags, string tag)
+        public static int FindTag(Tags tags, string tag)
         {
             for (int pos = 0; pos < sizeOfTags; pos++)
             {
                 if (tags[pos].tag == tag)
                 {
-                    return tags[pos];
+                    return pos;
                 }
             }
             Tag tagNull = new Tag(null, null, null);
-            return tagNull;    // костыли
+            return 0;    // костыли
+        }
+
+        public static void ChangeTag(string path, string currentTag, string newTag = null, string[] newChildren = null, string newParent = null)
+        {
+            Tags tags = ReadFromFile(path, 0);
+            Tag tagCh = tags[FindTag(tags, currentTag)];
+            if (newTag != null)
+            {
+                tagCh.tag = newTag;
+            }
+            if (newChildren != null)
+            {
+                tagCh.children = newChildren;
+            }
+            if (newParent != null)
+            {
+                tagCh.parent = newParent;
+            }
+            WriteIntoFile(path, tags);
         }
     }
 }
