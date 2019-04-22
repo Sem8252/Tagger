@@ -19,6 +19,11 @@ namespace Tagger
             this.parent = parent;
             this.childrens = childrens;
         }
+
+        //~Tag()
+        //{
+        //    // деструктор
+        //}
     }                                                               // можно не трогать, сами тэги
 
     class Tags : Tag
@@ -26,6 +31,7 @@ namespace Tagger
         private bool isReaded = false;
         private Tags tagsMain;
         protected Tag[] listOfTags;
+        protected int sizeOfTags = 0;
         private Tags(int size)
         {
             listOfTags = new Tag[size];
@@ -54,7 +60,8 @@ namespace Tagger
                     line[numOfLine] = Line.Split(';');
                     numOfLine++;
                 }
-                tagsMain = new Tags(numOfLine);
+                sizeOfTags += numOfLine + 2;      // чтобы в массиве listOfTags был запас в один элемент (на всякий случай)
+                tagsMain = new Tags(sizeOfTags);
                 foreach (var Line in line)
                 {
                     tags[Line[0]] = new Tag { Line[0], Line[1], Line[2].Split(',') };
@@ -79,19 +86,23 @@ namespace Tagger
                 tagsBufer[pos] = tagsMain[index].tag + ';' + tagsMain[index].parent + ';' + child;
             }
             File.WriteAllLines(path, tagsBufer);
+            isReaded = false;
         }
 
         public void addTag(string tag, string parent, string[] childrens, string path)
         {
+            sizeOfTags++;
             readTagsFromFile(path);
             tagsMain[tag] = new Tag(tag, parent, childrens);
             writeTagsIntoFile(path);
-            isReaded = false;
         }
 
         public void deleteTag(string tag, string path)
         {
-            readTagsFromFile(path);                             // доделать
+            readTagsFromFile(path);                                                          // доделать
+            sizeOfTags--;
+            tagsMain[tag] = null;
+            writeTagsIntoFile(path);
         }
 
         public void changeTag(string currentTag, string path, string newNameOfTag = null, string newParent = null, string[] newChildrens = null)
@@ -101,6 +112,7 @@ namespace Tagger
             {
                 newNameOfTag = currentTag;
             }
+            
             if (newParent = null)
             {
                 newParent = tagsMain[currentTag].parent;
@@ -109,8 +121,8 @@ namespace Tagger
             {
                 newChildrens = tagsMain[currentTag].childrens;
             }
+            tagsMain[currentTag] = null;
             tagsMain[newNameOfTag] = new Tag(newNameOfTag, newParent, newChildrens);
-            deleteTag(currentTag, path);
             writeTagsIntoFile(path);
         }
     }
