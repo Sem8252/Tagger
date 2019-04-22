@@ -9,121 +9,107 @@ namespace Tagger
 {
     class Tag
     {
-        protected string tag;
-        protected string parent;
-        protected string[] childrens;
+        public string tag;
+        public string parent = "";
+        public string[] children;
 
-        protected Tag(string tag, string parent, string[] childrens)
+        public Tag(string tag, string[] children, string parent)
         {
             this.tag = tag;
+            this.children = children;
             this.parent = parent;
-            this.childrens = childrens;
         }
+    }
 
-        //~Tag()
-        //{
-        //    // деструктор
-        //}
-    }                                                               // можно не трогать, сами тэги
-
-    class Tags : Tag
+    class Tags
     {
-        private bool isReaded = false;
-        private Tags tagsMain;
-        protected Tag[] listOfTags;
-        protected int sizeOfTags = 0;
-        private Tags(int size)
+        public static int sizeOfTags = 0;
+        //public static Tags mainTags;
+        Tag[] listOfTags;
+
+        public Tags(int size)
         {
             listOfTags = new Tag[size];
         }
 
-        public tags this[string index]                  // индексатор, где для удобства нахождения, индекс соответствует названию самого тега
+        public Tag this[int index]
         {
-            get
-            {
-                return listOfTags[index];
-            }
             set
             {
                 listOfTags[index] = value;
             }
-        }
-
-        public Tags readTagsFromFile(string tag, string path)
-        {
-            string[][] line;
-            int numOfLine = 0;
-            if (!isReaded)
+            get
             {
-                foreach (var Line in File.ReadAllLines(path))
-                {
-                    line[numOfLine] = Line.Split(';');
-                    numOfLine++;
-                }
-                sizeOfTags += numOfLine + 2;      // чтобы в массиве listOfTags был запас в один элемент (на всякий случай)
-                tagsMain = new Tags(sizeOfTags);
-                foreach (var Line in line)
-                {
-                    tags[Line[0]] = new Tag { Line[0], Line[1], Line[2].Split(',') };
-                }
-                isReaded = true;
+                return listOfTags[index];
             }
-            return tagsMain[tag];
         }
 
-        public void writeTagsIntoFile(string path)
+        public static Tags ReadFromFile(string path, int addPlace = 0)
         {
-            string[] tagsBufer;
-            int pos = 0;
-            foreach (string index in tagsMain)
+            string[] textBufer = File.ReadAllLines(path);
+            sizeOfTags = textBufer.Length + addPlace;
+            Tags tags = new Tags(sizeOfTags);
+            if (textBufer != null)
             {
-                string child = null;
-                foreach (var element in tagsMain[index].childrens)
+                int numOfTag = 0;
+                foreach (var pos in textBufer)
                 {
-                    child += element + ',';
+                    var eachLine = pos.Split(';');
+                    tags[numOfTag++] = new Tag(eachLine[0], eachLine[1].Split(','), eachLine[2]);
                 }
-                child -= ',';
-                tagsBufer[pos] = tagsMain[index].tag + ';' + tagsMain[index].parent + ';' + child;
             }
-            File.WriteAllLines(path, tagsBufer);
-            isReaded = false;
+            return tags;
         }
 
-        public void addTag(string tag, string parent, string[] childrens, string path)
+        public static void WriteIntoFile(string path, Tags tags)
         {
-            sizeOfTags++;
-            readTagsFromFile(path);
-            tagsMain[tag] = new Tag(tag, parent, childrens);
-            writeTagsIntoFile(path);
+            string[] textBufer = new string[sizeOfTags];
+            string childrenBufer = null;
+            for (int pos = 0; pos < sizeOfTags; pos++)
+            {
+                int i = 0;
+                foreach (var child in tags[pos].children)
+                {
+                    childrenBufer += child;
+                    i++;
+                    if (i != tags[pos].children.Length)
+                    {
+                        childrenBufer += ',';
+                    }
+                }
+                textBufer[pos] = tags[pos].tag + ';' + childrenBufer + ';' + tags[pos].parent;
+                childrenBufer = null;
+            }
+            File.WriteAllLines(path, textBufer);
         }
 
-        public void deleteTag(string tag, string path)
+        public static void AddTag(string path, string tag, string[] children = null, string parent = null)
         {
-            readTagsFromFile(path);                                                          // доделать
+            Tags tags = ReadFromFile(path, 1);
+            tags[sizeOfTags - 1] = new Tag(tag, children, parent);
+            WriteIntoFile(path, tags);
+        }
+
+        public static void DeleteTag(string path, string tag)
+        {
+            Tags tags = ReadFromFile(path, 0);
+            Tag tagD = FindTag(tags, tag);
+            tagD = null;
             sizeOfTags--;
-            tagsMain[tag] = null;
-            writeTagsIntoFile(path);
+            WriteIntoFile(path, tags);
         }
 
-        public void changeTag(string currentTag, string path, string newNameOfTag = null, string newParent = null, string[] newChildrens = null)
+        public static Tag FindTag(Tags tags, string tag)
         {
-            readTagsFromFile(path);
-            if (newNameOfTag = null)
+            for (int pos = 0; pos < sizeOfTags; pos++)
             {
-                newNameOfTag = currentTag;
+                if (tags[pos].tag == tag)
+                {
+                    return tags[pos];
+                }
             }
-            
-            if (newParent = null)
-            {
-                newParent = tagsMain[currentTag].parent;
-            }
-            if (newChildrens = null)
-            {
-                newChildrens = tagsMain[currentTag].childrens;
-            }
-            tagsMain[currentTag] = null;
-            tagsMain[newNameOfTag] = new Tag(newNameOfTag, newParent, newChildrens);
-            writeTagsIntoFile(path);
+            Tag tagNull = new Tag(null, null, null);
+            return tagNull;    // костыли
         }
     }
 }
