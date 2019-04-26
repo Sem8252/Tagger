@@ -132,5 +132,33 @@ namespace Tagger
             }
             WriteIntoFile(path, tags);
         }
+
+        public static Tags recieveTag(string path, string tag)
+        {
+            Tags tags = ReadFromFile(path, 0);
+            int sizeOfOut = 1;
+            string currentTag = tag;
+            for (int i = 0; i < sizeOfTags; i++)
+            {
+                Tag tagBufer = tags[FindTag(tags, currentTag)];
+                if (tagBufer.parent != "")
+                {
+                    sizeOfOut++;
+                    currentTag = tagBufer.parent;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            Tags tagsOut = new Tags(sizeOfTags - 1);
+            currentTag = tag;
+            for (int i = 0; i < sizeOfOut; i++)
+            {
+                tagsOut[i] = tags[FindTag(tags, currentTag)];
+                currentTag = tagsOut[i].parent;
+            }
+            return tagsOut;
+        }
     }
 }
