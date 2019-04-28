@@ -136,7 +136,7 @@ namespace Tagger
         public static Tags recieveTag(string path, string tag)
         {
             Tags tags = ReadFromFile(path, 0);
-            int sizeOfOut = 1;
+            int sizeOfOut = 0;
             string currentTag = tag;
             for (int i = 0; i < sizeOfTags; i++)
             {
@@ -151,7 +151,8 @@ namespace Tagger
                     break;
                 }
             }
-            Tags tagsOut = new Tags(sizeOfTags - 1);
+            sizeOfOut--;
+            Tags tagsOut = new Tags(sizeOfOut);
             currentTag = tag;
             for (int i = 0; i < sizeOfOut; i++)
             {
@@ -161,4 +162,3 @@ namespace Tagger
             return tagsOut;
         }
     }
-}
