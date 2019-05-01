@@ -25,14 +25,20 @@ namespace Tagger
         public MainWindow()
         {
             InitializeComponent();
+            tagLibrary = TagLib.ReadFromFile(bdPath);
+            var tags = TagLib.GetAllTags(tagLibrary);
+            foreach (var tag in tags)
+                BDBox.Items.Add(tag);
         }
 
         protected string path;
+        protected string bdPath = "BDTags.txt";
         protected List<FileInfo> files = new List<FileInfo>();
         protected List<string> tags = new List<string>();
         protected FolderBrowserDialog browser = new FolderBrowserDialog();
         protected static Random rand = new Random();
         protected const string characters = "qwertyuiopasdfghjklzxcvbnm0123456789";
+        protected List<string[]> tagLibrary = new List<string[]>();
 
         private void ButtonPath_Click(object sender, RoutedEventArgs e)
         {
@@ -45,6 +51,7 @@ namespace Tagger
         private void AddTagButton_Click(object sender, RoutedEventArgs e)
         {
             addTagKey();
+            
         }
 
         private void DeleteTagButton_Click(object sender, RoutedEventArgs e)
@@ -75,6 +82,7 @@ namespace Tagger
         private void CheckBoxSubDirectory_Checked(object sender, RoutedEventArgs e)
         {
             Rescan();
+            
         }
 
         private void CheckBoxSubDirectory_Unchecked(object sender, RoutedEventArgs e)
@@ -142,9 +150,21 @@ namespace Tagger
             if (e.Key == Key.Enter)
             {
                 path = PathLabel.Text;
+                browser.SelectedPath = path;
                 try { Rescan(); }
                 catch { }
             }
+        }
+
+        private void LibraryButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = BDBox.SelectedItem.ToString();
+            var toUse = TagLib.TagsToWrite(tagLibrary, selectedItem);
+            foreach(var tag in toUse)
+            {
+                FileProcessor.AddTag(files, tag);
+                Rescan();
+            }  
         }
     }
 }
