@@ -25,7 +25,12 @@ namespace Tagger
         public MainWindow()
         {
             InitializeComponent();
-            tagLibrary = TagLib.ReadFromFile(bdPath);
+            CheckBD(bdPath);
+        }
+
+        private void CheckBD(string path)
+        {
+            tagLibrary = TagLib.ReadFromFile(path);
             var tags = TagLib.GetAllTags(tagLibrary);
             foreach (var tag in tags)
                 BDBox.Items.Add(tag);
@@ -50,8 +55,7 @@ namespace Tagger
 
         private void AddTagButton_Click(object sender, RoutedEventArgs e)
         {
-            addTagKey();
-            
+            addTagKey();   
         }
 
         private void DeleteTagButton_Click(object sender, RoutedEventArgs e)
@@ -75,6 +79,7 @@ namespace Tagger
                 tags = FileProcessor.GetTagsFromDirectory(files);
                 foreach (var tag in tags)
                     TagListComboBox.Items.Add(tag);
+                
             }
             catch { }
         }
@@ -82,7 +87,6 @@ namespace Tagger
         private void CheckBoxSubDirectory_Checked(object sender, RoutedEventArgs e)
         {
             Rescan();
-            
         }
 
         private void CheckBoxSubDirectory_Unchecked(object sender, RoutedEventArgs e)
@@ -141,6 +145,11 @@ namespace Tagger
         {
             Rescan();
             if (!(TextBoxTag.Text.Contains('%') || (TextBoxTag.Text == "")))
+                if(tagLibrary.Find(x=>x[1].Equals(TextBoxTag.Text))!=null)
+                {
+                    AddAll(TextBoxTag.Text);
+                }
+            else
                 FileProcessor.AddTag(files, TextBoxTag.Text);
             Rescan();
         }
@@ -158,13 +167,31 @@ namespace Tagger
 
         private void LibraryButton_Click(object sender, RoutedEventArgs e)
         {
+            Rescan();
             var selectedItem = BDBox.SelectedItem.ToString();
-            var toUse = TagLib.TagsToWrite(tagLibrary, selectedItem);
-            foreach(var tag in toUse)
+            AddAll(selectedItem);
+        }
+
+        private void AddToBDBut_Click(object sender, RoutedEventArgs e)
+        {
+            if (BDBox.SelectedIndex != -1)
             {
-                FileProcessor.AddTag(files, tag);
+                var parent = BDBox.SelectedItem.ToString();
+                tagLibrary.Add(new string[] { parent, ChildBox.Text });
+                TagLib.WriteToFile(tagLibrary, bdPath);
+                CheckBD(bdPath);
+            }
+            else System.Windows.MessageBox.Show("Выберите предка!");
+        }
+
+        private void AddAll(string tag)
+        {
+            var toUse = TagLib.TagsToWrite(tagLibrary, tag);
+            foreach (var curTag in toUse)
+            {
+                FileProcessor.AddTag(files, curTag);
                 Rescan();
-            }  
+            }
         }
     }
 }
