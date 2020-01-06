@@ -1,0 +1,25 @@
+﻿<Window x:Name="window" x:Class="Tagger.PictureExplorer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tagger"
+        mc:Ignorable="d"
+        Title="PictureExplorer" Height="450" Width="800" ScrollViewer.CanContentScroll="True" SizeChanged="Window_SizeChanged" Closing="window_Closing">
+    
+    
+    <ScrollViewer>
+        <StackPanel>
+            <Grid x:Name="grid2">
+                <Button x:Name="Scan" Content="Scan" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,10,0,0" Click="Scan_Click"/>
+                <CheckBox x:Name="IsInnerDirectories" Content="Подпапки" HorizontalAlignment="Left" Margin="215,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.169,0.353" Checked="IsInnerDirectories_Checked"/>
+                <Image x:Name="checkSymbol" HorizontalAlignment="Left" Height="100" Margin="682,10,0,0" VerticalAlignment="Top" Width="100" Source="kisspng-check-mark-computer-icons-clip-art-green-check-mark-2-icon-5ab1d1bfebf0f5.0376901715216030079664.jpg" Visibility="Hidden"/>
+                <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="90,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="SearchBox_KeyDown"/>
+            </Grid>
+            <Grid x:Name="grid">
+                
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+    
+</Window>

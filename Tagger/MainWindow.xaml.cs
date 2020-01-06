@@ -28,14 +28,17 @@ namespace Tagger
             CheckBD(bdPath);
         }
 
-        private void CheckBD(string path)
+        public void CheckBD(string path)
         {
             tagLibrary = TagLib.ReadFromFile(path);
-            var tags = TagLib.GetAllTags(tagLibrary);
+            var tags = TagLib.GetAllTags(tagLibrary).OrderBy(x=>x);
             foreach (var tag in tags)
                 BDBox.Items.Add(tag);
         }
+        
 
+        PictureExplorer pictureExplorer;
+        
         protected string path;
         protected string bdPath = "BDTags.txt";
         protected List<FileInfo> files = new List<FileInfo>();
@@ -44,7 +47,6 @@ namespace Tagger
         protected static Random rand = new Random();
         protected const string characters = "qwertyuiopasdfghjklzxcvbnm0123456789";
         protected List<string[]> tagLibrary = new List<string[]>();
-
         private void ButtonPath_Click(object sender, RoutedEventArgs e)
         {
             browser.ShowDialog();
@@ -52,16 +54,20 @@ namespace Tagger
             PathLabel.Text = path;
             Rescan();
         }
-
         private void AddTagButton_Click(object sender, RoutedEventArgs e)
         {
-            addTagKey();   
+            if (checkedPictures == 0)
+                addTagKey(files);
+            else
+                addTagKey(checkedImages);
         }
-
         private void DeleteTagButton_Click(object sender, RoutedEventArgs e)
         {
             //Rescan();
-            FileProcessor.RemoveTag(files, TagListComboBox.SelectionBoxItem.ToString());
+            if (checkedPictures == 0)
+                FileProcessor.RemoveTag(files, TagListComboBox.SelectionBoxItem.ToString());
+            else
+                FileProcessor.RemoveTag(checkedImages, TagListComboBox.SelectionBoxItem.ToString());
             Rescan();
         }
 
@@ -70,16 +76,26 @@ namespace Tagger
             Rescan();
         }
 
+        int checkedPictures = 0;
         protected void Rescan()
         {
             try
             {
+                checkedImages = Transfer.GetSearchedFiles();
                 TagListComboBox.Items.Clear();
                 files = FileProcessor.ScanDirectories(path, CheckBoxSubDirectory.IsChecked.Value);
+                List<FileInfo> filesToFind = new List<FileInfo>(checkedImages);
+                checkedImages.Clear();
+                foreach(var file in filesToFind)
+                {
+                    checkedImages.Add(files.Find(x => x.FullName.Split('%')[0].Contains(file.FullName.Split('%')[0])));
+                }
+                Transfer.PutSearchedFiles(checkedImages);
                 tags = FileProcessor.GetTagsFromDirectory(files);
                 foreach (var tag in tags)
                     TagListComboBox.Items.Add(tag);
-                
+                checkedPictures = checkedImages.Count;
+                CheckedCount.Content = checkedPictures;
             }
             catch { }
         }
@@ -137,23 +153,24 @@ namespace Tagger
         {
             if(e.Key == Key.Enter)
             {
-                addTagKey();
+                if (checkedPictures == 0)
+                    addTagKey(files);
+                else
+                    addTagKey(checkedImages);
             }
         }
-
-        private void addTagKey()
+        private void addTagKey(List<FileInfo> filesToTag)
         {
             Rescan();
             if (!(TextBoxTag.Text.Contains('%') || (TextBoxTag.Text == "")))
                 if(tagLibrary.Find(x=>x[1].Equals(TextBoxTag.Text))!=null)
                 {
-                    AddAll(TextBoxTag.Text);
+                    AddAll(TextBoxTag.Text, filesToTag);
                 }
             else
-                FileProcessor.AddTag(files, TextBoxTag.Text);
+                FileProcessor.AddTag(filesToTag, TextBoxTag.Text);
             Rescan();
         }
-
         private void PathLabel_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -164,14 +181,15 @@ namespace Tagger
                 catch { }
             }
         }
-
         private void LibraryButton_Click(object sender, RoutedEventArgs e)
         {
             Rescan();
             var selectedItem = BDBox.SelectedItem.ToString();
-            AddAll(selectedItem);
+            if (checkedPictures == 0)
+                AddAll(selectedItem, files);
+            else
+                AddAll(selectedItem, checkedImages);
         }
-
         private void AddToBDBut_Click(object sender, RoutedEventArgs e)
         {
             if (BDBox.SelectedIndex != -1)
@@ -183,15 +201,61 @@ namespace Tagger
             }
             else System.Windows.MessageBox.Show("Выберите предка!");
         }
-
-        private void AddAll(string tag)
+        private void AddAll(string tag, List<FileInfo> filesToTag)
         {
             var toUse = TagLib.TagsToWrite(tagLibrary, tag);
             foreach (var curTag in toUse)
             {
-                FileProcessor.AddTag(files, curTag);
+                FileProcessor.AddTag(filesToTag, curTag);
                 Rescan();
+                filesToTag = new List<FileInfo>(checkedImages);
             }
+        }
+
+        private void OpenExplorer_Click(object sender, RoutedEventArgs e)
+        {
+            if (PathLabel.Text != "")
+            {
+                try
+                {
+                    pictureExplorer = new PictureExplorer(path);
+                    pictureExplorer.Show();
+                }
+                catch { }
+            }
+        }
+
+        List<FileInfo> checkedImages = new List<FileInfo>();
+        private void testbutton_Click(object sender, RoutedEventArgs e)
+        {
+            //checkedImages = Transfer.GetSearchedFiles();
+            if(checkedImages.Count>0)
+            {
+                addTagKey(checkedImages);   
+            }
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            Rescan();
+        }
+
+        private void Window_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Rescan();
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            Transfer.Clear();
+            Rescan();
+        }
+
+        TagTree treeWindow;
+        private void ShowTree_Click(object sender, RoutedEventArgs e)
+        {
+            treeWindow = new TagTree(tags);
+            treeWindow.Show();
         }
     }
 }

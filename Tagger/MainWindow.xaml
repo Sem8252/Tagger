@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tagger"
         mc:Ignorable="d"
-        Title="Tagger" Height="222.742" MinHeight="150.742" UseLayoutRounding="False" ResizeMode="CanMinimize" Width="382.666">
+        Title="Tagger" Height="222.742" MinHeight="150.742" UseLayoutRounding="False" ResizeMode="CanMinimize" Width="382.666" Activated="Window_Activated" MouseEnter="Window_MouseEnter">
     <Grid>
         <Button x:Name="ButtonPath" Content="Выбрать папку" HorizontalAlignment="Left" Margin="13,84,0,0" VerticalAlignment="Top" Width="99" Click="ButtonPath_Click"/>
         <CheckBox x:Name="CheckBoxSubDirectory" Content="Подпапки" HorizontalAlignment="Left" Margin="13,64,0,0" VerticalAlignment="Top" Checked="CheckBoxSubDirectory_Checked" Unchecked="CheckBoxSubDirectory_Unchecked"/>
@@ -14,12 +14,14 @@
         <Button x:Name="AddTagButton" Content="Добавить тег" HorizontalAlignment="Left" Margin="117,84,0,0" VerticalAlignment="Top" Width="120" Click="AddTagButton_Click"/>
         <ComboBox x:Name="TagListComboBox" HorizontalAlignment="Left" Margin="242,57,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="DeleteTagButton" Content="Удалить тег" HorizontalAlignment="Left" Margin="242,84,0,0" VerticalAlignment="Top" Width="120" Click="DeleteTagButton_Click"/>
-        <Button x:Name="ButtonFix" Content="Исправить" HorizontalAlignment="Left" Margin="117,109,0,0" VerticalAlignment="Top" Width="120" Click="ButtonFix_Click"/>
         <TextBox x:Name="PathLabel" HorizontalAlignment="Left" Height="40" Margin="55,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="304" KeyDown="PathLabel_KeyDown"/>
-        <Button x:Name="LibraryButton" Content="Добавить из БД" HorizontalAlignment="Left" Margin="117,136,0,0" VerticalAlignment="Top" Width="120" Click="LibraryButton_Click"/>
-        <ComboBox x:Name="BDBox" HorizontalAlignment="Left" Margin="13,136,0,0" VerticalAlignment="Top" Width="99"/>
-        <Button x:Name="AddToBDBut" Content="Добавить в БД" HorizontalAlignment="Left" Margin="117,163,0,0" VerticalAlignment="Top" Width="120" Click="AddToBDBut_Click" Height="23"/>
-        <TextBox x:Name="ChildBox" HorizontalAlignment="Left" Height="23" Margin="13,163,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="99"/>
+        <Button x:Name="LibraryButton" Content="Добавить из БД" HorizontalAlignment="Left" Margin="117,107,0,0" VerticalAlignment="Top" Width="120" Click="LibraryButton_Click" Height="22"/>
+        <ComboBox x:Name="BDBox" HorizontalAlignment="Left" Margin="13,107,0,0" VerticalAlignment="Top" Width="99"/>
+        <Button x:Name="AddToBDBut" Content="Добавить в БД" HorizontalAlignment="Left" Margin="117,134,0,0" VerticalAlignment="Top" Width="120" Click="AddToBDBut_Click" Height="23"/>
+        <TextBox x:Name="ChildBox" HorizontalAlignment="Left" Height="23" Margin="13,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="99"/>
+        <Button x:Name="OpenExplorer" Content="Обозреватель" HorizontalAlignment="Left" Margin="242,107,0,0" VerticalAlignment="Top" Width="99" Height="22" Click="OpenExplorer_Click"/>
+        <Label x:Name="CheckedCount" Content="0" HorizontalAlignment="Left" Margin="346,107,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="ClearButton" Content="Снять выделение" HorizontalAlignment="Left" Margin="242,134,0,0" VerticalAlignment="Top" Width="120" Height="23" Click="ClearButton_Click"/>
 
     </Grid>
 </Window>
