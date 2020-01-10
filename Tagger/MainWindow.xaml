@@ -12,7 +12,7 @@
         <Label x:Name="PathLabel1" Content="Путь" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,2,0,0"/>
         <TextBox x:Name="TextBoxTag" HorizontalAlignment="Left" Height="23" Margin="117,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="TextBoxTag_KeyDown"/>
         <Button x:Name="AddTagButton" Content="Добавить тег" HorizontalAlignment="Left" Margin="117,84,0,0" VerticalAlignment="Top" Width="120" Click="AddTagButton_Click"/>
-        <ComboBox x:Name="TagListComboBox" HorizontalAlignment="Left" Margin="242,57,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="TagListComboBox" HorizontalAlignment="Left" Margin="242,57,0,0" VerticalAlignment="Top" Width="120" ContextMenuOpening="TagListComboBox_ContextMenuOpening"/>
         <Button x:Name="DeleteTagButton" Content="Удалить тег" HorizontalAlignment="Left" Margin="242,84,0,0" VerticalAlignment="Top" Width="120" Click="DeleteTagButton_Click"/>
         <TextBox x:Name="PathLabel" HorizontalAlignment="Left" Height="40" Margin="55,5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="304" KeyDown="PathLabel_KeyDown"/>
         <Button x:Name="LibraryButton" Content="Добавить из БД" HorizontalAlignment="Left" Margin="117,107,0,0" VerticalAlignment="Top" Width="120" Click="LibraryButton_Click" Height="22"/>
@@ -21,7 +21,7 @@
         <TextBox x:Name="ChildBox" HorizontalAlignment="Left" Height="23" Margin="13,134,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="99"/>
         <Button x:Name="OpenExplorer" Content="Обозреватель" HorizontalAlignment="Left" Margin="242,107,0,0" VerticalAlignment="Top" Width="99" Height="22" Click="OpenExplorer_Click"/>
         <Label x:Name="CheckedCount" Content="0" HorizontalAlignment="Left" Margin="346,107,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="ClearButton" Content="Снять выделение" HorizontalAlignment="Left" Margin="242,134,0,0" VerticalAlignment="Top" Width="120" Height="23" Click="ClearButton_Click"/>
+        <Button x:Name="ClearButton" Content="Снять выделение" HorizontalAlignment="Left" Margin="242,134,0,0" VerticalAlignment="Top" Width="120" Height="23" Click="ClearButton_Click" Visibility="Hidden"/>
 
     </Grid>
 </Window>

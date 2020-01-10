@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows;
 
 
 namespace Tagger
@@ -40,11 +41,19 @@ namespace Tagger
 
         public static List<string> GetTagsFromFile(FileInfo file)
         {
-            var nameAndType = file.Name.Split('.');
-            var tags = nameAndType[0].Split('%').ToList();
-            tags.RemoveAt(0);
-            var distinct = tags.Distinct().ToList();
-            return distinct;
+            if (file != null)
+            {
+                var nameAndType = file.Name.Split('.');
+                var tags = nameAndType[0].Split('%').ToList();
+                tags.RemoveAt(0);
+                var distinct = tags.Distinct().ToList();
+                return distinct;
+            }
+            else
+            {
+                MessageBox.Show("ERROR!");
+                throw new Exception("FileIsNull");
+            }
         }
 
         public static void AddTag(List<FileInfo> files, string tag)

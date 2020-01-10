@@ -81,15 +81,16 @@ namespace Tagger
         {
             try
             {
+                
                 checkedImages = Transfer.GetSearchedFiles();
                 TagListComboBox.Items.Clear();
                 files = FileProcessor.ScanDirectories(path, CheckBoxSubDirectory.IsChecked.Value);
                 List<FileInfo> filesToFind = new List<FileInfo>(checkedImages);
                 checkedImages.Clear();
                 foreach(var file in filesToFind)
-                {
-                    checkedImages.Add(files.Find(x => x.FullName.Split('%')[0].Contains(file.FullName.Split('%')[0])));
-                }
+                    checkedImages.Add(files.Find(x => x.FullName.Split('%')[0].Contains(file.FullName.Split('.')[0].Split('%')[0])));
+                if (checkedImages == null)
+                    System.Windows.MessageBox.Show("АТАТА!");
                 Transfer.PutSearchedFiles(checkedImages);
                 tags = FileProcessor.GetTagsFromDirectory(files);
                 foreach (var tag in tags)
@@ -204,11 +205,13 @@ namespace Tagger
         private void AddAll(string tag, List<FileInfo> filesToTag)
         {
             var toUse = TagLib.TagsToWrite(tagLibrary, tag);
+            List<FileInfo> toTag = new List<FileInfo>(filesToTag);
             foreach (var curTag in toUse)
             {
-                FileProcessor.AddTag(filesToTag, curTag);
+                FileProcessor.AddTag(toTag, curTag);
                 Rescan();
-                filesToTag = new List<FileInfo>(checkedImages);
+                toTag.Clear();
+                toTag = new List<FileInfo>(checkedImages);
             }
         }
 
@@ -242,7 +245,7 @@ namespace Tagger
 
         private void Window_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            Rescan();
+            //Rescan();
         }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
@@ -256,6 +259,13 @@ namespace Tagger
         {
             treeWindow = new TagTree(tags);
             treeWindow.Show();
+        }
+
+        private void TagListComboBox_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            
+            foreach (var tag in tags)
+                TagListComboBox.Items.Add(tag);
         }
     }
 }

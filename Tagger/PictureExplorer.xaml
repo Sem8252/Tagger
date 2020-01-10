@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tagger"
         mc:Ignorable="d"
-        Title="PictureExplorer" Height="450" Width="800" ScrollViewer.CanContentScroll="True" SizeChanged="Window_SizeChanged" Closing="window_Closing">
+        Title="PictureExplorer" Height="450" Width="800" ScrollViewer.CanContentScroll="True" SizeChanged="Window_SizeChanged" Closing="window_Closing" MouseEnter="window_MouseEnter">
     
     
     <ScrollViewer>
@@ -15,6 +15,7 @@
                 <CheckBox x:Name="IsInnerDirectories" Content="Подпапки" HorizontalAlignment="Left" Margin="215,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.169,0.353" Checked="IsInnerDirectories_Checked"/>
                 <Image x:Name="checkSymbol" HorizontalAlignment="Left" Height="100" Margin="682,10,0,0" VerticalAlignment="Top" Width="100" Source="kisspng-check-mark-computer-icons-clip-art-green-check-mark-2-icon-5ab1d1bfebf0f5.0376901715216030079664.jpg" Visibility="Hidden"/>
                 <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="90,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="SearchBox_KeyDown"/>
+                <Button x:Name="ClearButton" Content="Clear" HorizontalAlignment="Left" Margin="295,10,0,0" VerticalAlignment="Top" Width="75" Click="ClearButton_Click"/>
             </Grid>
             <Grid x:Name="grid">
                 

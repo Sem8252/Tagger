@@ -184,5 +184,25 @@ namespace Tagger
         {
             Transfer.Clear();
         }
+
+        private void window_MouseEnter(object sender, MouseEventArgs e)
+        {
+            //var testScan = FileProcessor.ScanDirectories(path, IsInnerDirectories.IsChecked.Value);
+            //if (!testScan.SequenceEqual(files))
+            //{
+            //    Scan_Click(this, e);
+            //    redraw();
+            //}
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            Transfer.Clear();
+            grid.Children.Clear();
+            checkedImages.Clear();
+            checkMarks.Clear();
+            Scan_Click(this, e);
+            redraw();
+        }
     }
 }
