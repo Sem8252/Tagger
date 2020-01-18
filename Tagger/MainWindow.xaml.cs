@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.IO;
 
-namespace Tagger
+namespace Tagger // Проверка ветви
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
