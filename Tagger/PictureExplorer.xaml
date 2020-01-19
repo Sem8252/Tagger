@@ -21,21 +21,21 @@
                 
             </Grid> -->
 
-          <WrapPanel x:Name="WrapPanel0" Orientation="Horizontal">
-            
-          
+            <WrapPanel x:Name="WrapPanel0" Orientation="Horizontal" PreviewMouseDown="Check">
 
-          <ItemsControl ItemsSource="{Binding allImages}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel IsItemsHost="True" Margin="10"/>
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-          </ItemsControl>
-            
-            
-          </WrapPanel>
-            
+
+
+                <ItemsControl ItemsSource="{Binding allImages}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" Margin="10" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+
+            </WrapPanel>
+
         </StackPanel>
     </ScrollViewer>
     

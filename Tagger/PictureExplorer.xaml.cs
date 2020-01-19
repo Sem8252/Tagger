@@ -116,38 +116,41 @@ namespace Tagger
 
         protected List<string> checkedImages = new List<string>(); // Список помеченных картинок (строки)
         protected List<Image> checkMarks = new List<Image>();   // Список отметок (изображения)
-        protected void check(object sender, RoutedEventArgs e) // Обработчик нажатия на картинку (отметить картинку)
+        protected void Check(object sender, RoutedEventArgs e) // Обработчик нажатия на картинку (отметить картинку)
         {
-            string name = (string)((Image)sender).Tag; // Получаем
+            if (e.OriginalSource is Image image)
+                pictureExplorerView.ChangeImageSelection(image);
 
-            if(checkedImages.Contains(name)) // Проверяем была ли картинка уже отмечена
-            {
-                checkedImages.Remove(name); // Если да, удалим ее название из списка отмеченных картинок
-                //grid.Children.Remove(checkMarks.Find(x => x.Margin.Left == ((Image)sender).Margin.Left && x.Margin.Top == ((Image)sender).Margin.Top));
-                WrapPanel0.Children.Remove(checkMarks.Find(x => x.Margin.Left == ((Image)sender).Margin.Left && x.Margin.Top == ((Image)sender).Margin.Top));
+            //string name = (string)((Image)sender).Tag; // Получаем
 
-                checkMarks.Remove(checkMarks.Find(x => x.Margin.Left == ((Image)sender).Margin.Left && x.Margin.Top == ((Image)sender).Margin.Top));
-            }
-            else 
-            {
-                checkedImages.Add(name); // Если нет, то добавим ее название в список отмеченных картинок 
-                Image image = new Image(); // Создаем новую картинку
-                image.Stretch = Stretch.Fill; // Должна заполнить область
-                image.Height = 10; // Высота
-                image.Width = 10; // Ширина
-                image.HorizontalAlignment = HorizontalAlignment.Left; // Расположена слева
-                image.VerticalAlignment = VerticalAlignment.Top;      // и сверху
-                image.Margin = new Thickness(((Image)sender).Margin.Left, ((Image)sender).Margin.Top, 0, 0); // Расположение в верхнем левом углу картинки метки
-                image.Source = checkSymbol.Source;
-                checkMarks.Add(image);  // Добавление отметки в список отметок
-                //grid.Children.Add(checkMarks.Last());   // Добавление метки на грид
+            //if(checkedImages.Contains(name)) // Проверяем была ли картинка уже отмечена
+            //{
+            //    checkedImages.Remove(name); // Если да, удалим ее название из списка отмеченных картинок
+            //    //grid.Children.Remove(checkMarks.Find(x => x.Margin.Left == ((Image)sender).Margin.Left && x.Margin.Top == ((Image)sender).Margin.Top));
+            //    WrapPanel0.Children.Remove(checkMarks.Find(x => x.Margin.Left == ((Image)sender).Margin.Left && x.Margin.Top == ((Image)sender).Margin.Top));
+
+            //    checkMarks.Remove(checkMarks.Find(x => x.Margin.Left == ((Image)sender).Margin.Left && x.Margin.Top == ((Image)sender).Margin.Top));
+            //}
+            //else 
+            //{
+            //    checkedImages.Add(name); // Если нет, то добавим ее название в список отмеченных картинок 
+            //    Image image = new Image(); // Создаем новую картинку
+            //    image.Stretch = Stretch.Fill; // Должна заполнить область
+            //    image.Height = 10; // Высота
+            //    image.Width = 10; // Ширина
+            //    image.HorizontalAlignment = HorizontalAlignment.Left; // Расположена слева
+            //    image.VerticalAlignment = VerticalAlignment.Top;      // и сверху
+            //    image.Margin = new Thickness(((Image)sender).Margin.Left, ((Image)sender).Margin.Top, 0, 0); // Расположение в верхнем левом углу картинки метки
+            //    image.Source = checkSymbol.Source;
+            //    checkMarks.Add(image);  // Добавление отметки в список отметок
+            //    //grid.Children.Add(checkMarks.Last());   // Добавление метки на грид
                 
 
-                WrapPanel0.Children.Add(checkMarks.Last());
+            //    WrapPanel0.Children.Add(checkMarks.Last());
 
 
-            }
-            Transfer.PutSearchedFiles(checkedImages); // Добавление отмеченных файлов в список трансфера
+            //}
+            //Transfer.PutSearchedFiles(checkedImages); // Добавление отмеченных файлов в список трансфера
         }
 
 

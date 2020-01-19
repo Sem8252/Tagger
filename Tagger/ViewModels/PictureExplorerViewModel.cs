@@ -60,6 +60,8 @@ namespace Tagger.ViewModels
             }
         }
 
+        List<string> checkedImages = new List<string>(); // Список выбранных картинок
+
         //public List<Image> allImages
         //{
         //    get
@@ -135,6 +137,23 @@ namespace Tagger.ViewModels
                 }
                 catch { }
             }
+        }
+
+
+        public void ChangeImageSelection(Image image)
+        {
+            string name = (string)image.Tag;
+
+            if (!checkedImages.Contains(name))
+            {
+                checkedImages.Add(name);
+            }
+            else
+            {
+                checkedImages.Remove(name);
+            }
+
+            Transfer.PutSearchedFiles(checkedImages);
         }
     }
 }
