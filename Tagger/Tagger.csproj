@@ -111,6 +111,7 @@
       <DependentUpon>TagTree.xaml</DependentUpon>
     </Compile>
     <Compile Include="Transfer.cs" />
+    <Compile Include="ViewModels\PictureExplorerViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
