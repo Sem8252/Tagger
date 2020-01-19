@@ -47,8 +47,8 @@ namespace Tagger.ViewModels
 
         List<FileInfo> files = new List<FileInfo>();
 
-        ObservableCollection<Image> _allImages = new ObservableCollection<Image>();
-        public ObservableCollection<Image> allImages
+        ObservableCollection<Grid> _allImages = new ObservableCollection<Grid>();
+        public ObservableCollection<Grid> allImagesHandlers
         {
             get
             {
@@ -62,19 +62,6 @@ namespace Tagger.ViewModels
 
         List<string> checkedImages = new List<string>(); // Список выбранных картинок
 
-        //public List<Image> allImages
-        //{
-        //    get
-        //    {
-        //        return _allImages;
-        //    }
-        //    set
-        //    {
-        //        _allImages = value;
-        //        OnPropertyChanged("allImages");
-        //    }
-        //}
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string name)
         {
@@ -84,10 +71,10 @@ namespace Tagger.ViewModels
 
         public PictureExplorerViewModel(string path)
         {
-            //allImages.CollectionChanged += CollectionChangedHandler;
 
             this.path = path;
             files = FileProcessor.ScanDirectories(path, isInnerDirectoriesChecked);
+
         }
 
         public void UpdateImagesData()
@@ -107,7 +94,6 @@ namespace Tagger.ViewModels
                 }
             }
 
-            // Сформировать набор данных для привязки
         }
 
         public void UpdateImagesList()
@@ -132,7 +118,10 @@ namespace Tagger.ViewModels
                     image.Source = bitmapImage;
                     image.Tag = cur.FullName;
 
-                    allImages.Add(image);
+                    Grid imageHandler = new Grid();
+                    imageHandler.Children.Add(image);
+
+                    allImagesHandlers.Add(imageHandler);
 
                 }
                 catch { }
@@ -140,20 +129,76 @@ namespace Tagger.ViewModels
         }
 
 
-        public void ChangeImageSelection(Image image)
+        public void ChangeImageSelection(Image image, Image mark)
         {
             string name = (string)image.Tag;
+            bool isRequired = false;    // Флаг, проверяющий входит ли картинка в список требуемых (не просто ли это пометка)
+
+            foreach (var file in files)
+            {
+                if (file.FullName == name)
+                    isRequired = true;
+            }
+
+            if (!isRequired)    // Если это просто какая-либо метка, выходим из метода
+                return;
+
+            Grid imageHandler = image.Parent as Grid;
 
             if (!checkedImages.Contains(name))
             {
                 checkedImages.Add(name);
+                AddCheckedMark(imageHandler, mark);
             }
             else
             {
                 checkedImages.Remove(name);
+                DeleteCheckedMark(imageHandler);
             }
 
             Transfer.PutSearchedFiles(checkedImages);
+        }
+
+        private void AddCheckedMark(Grid imageHandler, Image mark)
+        {
+            Image checkedMark = new Image();
+            checkedMark.Stretch = Stretch.Fill;
+            checkedMark.Height = 10;
+            checkedMark.Width = 10;
+            checkedMark.HorizontalAlignment = HorizontalAlignment.Left;
+            checkedMark.VerticalAlignment = VerticalAlignment.Top;
+            checkedMark.Source = mark.Source;
+            checkedMark.Tag = "mark";
+
+            imageHandler.Children.Add(checkedMark);
+        }
+
+        private void DeleteCheckedMark(Grid imageHandler)
+        {
+            var images = imageHandler.Children;
+            for (int i = 0; i < imageHandler.Children.Count; i++)
+            {
+                if ((string)(images[i] as Image).Tag == "mark")
+                    imageHandler.Children.RemoveAt(i);
+            }
+        }
+
+
+
+        public void Window_Closed()
+        {
+            Transfer.Clear();
+        }
+
+
+
+        public void ClearButton_Clicked()
+        {
+            Transfer.Clear();
+            checkedImages.Clear();
+
+            for (int i = 0; i < allImagesHandlers.Count; i++)
+                DeleteCheckedMark(allImagesHandlers[i]);
         }
     }
 }
