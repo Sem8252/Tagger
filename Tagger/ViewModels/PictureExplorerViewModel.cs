@@ -48,6 +48,7 @@ namespace Tagger.ViewModels
         List<FileInfo> files = new List<FileInfo>();
 
         ObservableCollection<Grid> _allImages = new ObservableCollection<Grid>();
+        
         public ObservableCollection<Grid> allImagesHandlers
         {
             get
@@ -104,9 +105,15 @@ namespace Tagger.ViewModels
                 try
                 {
                     BitmapImage bitmapImage = new BitmapImage();
+
                     bitmapImage.BeginInit();
+
                     bitmapImage.UriSource = new Uri(cur.FullName, UriKind.Relative);
                     bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+
+                    bitmapImage.DecodePixelHeight = 100;
+                    bitmapImage.DecodePixelWidth = 100;
+
                     bitmapImage.EndInit();
 
                     Image image = new Image(); // Создадим картинку и инициализируем ее
@@ -126,6 +133,8 @@ namespace Tagger.ViewModels
                 }
                 catch { }
             }
+
+
         }
 
 
