@@ -12,17 +12,15 @@ namespace Tagger
         public static List<FileInfo> searchedFiles = new List<FileInfo>();
         public static List<FileInfo> GetSearchedFiles()
         {
-            
             return new List<FileInfo>(searchedFiles);
         }
         public static void PutSearchedFiles(List<FileInfo> files)
         {
-            searchedFiles.Clear();
-            foreach (var file in files)
-                searchedFiles.Add(new FileInfo(file.FullName));
+            searchedFiles = new List<FileInfo>(files);
         }
         public static void PutSearchedFiles(List<string> files)
         {
+            
             searchedFiles.Clear();
             foreach (var file in files)
                 searchedFiles.Add(new FileInfo(file));

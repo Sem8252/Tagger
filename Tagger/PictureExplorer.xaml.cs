@@ -26,7 +26,6 @@ namespace Tagger
 
         PictureExplorerViewModel pictureExplorerView;
 
-
         public PictureExplorer(string dirPath)  // Конструктор класса
         {
             InitializeComponent();  // Базовая инициализация компонентов

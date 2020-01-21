@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace Tagger
 {
-    class FileProcessor
+    static class FileProcessor
     {
         public static List<FileInfo> ScanDirectories(string path, bool isSubDirectories)
         {

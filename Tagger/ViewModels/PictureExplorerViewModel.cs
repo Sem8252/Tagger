@@ -99,6 +99,7 @@ namespace Tagger.ViewModels
 
         public void UpdateImagesList()
         {
+
             _allImages.Clear();
             foreach (var cur in files) // Для каждого файла в отсортированном списке
             {
@@ -117,7 +118,7 @@ namespace Tagger.ViewModels
                     bitmapImage.EndInit();
 
                     Image image = new Image(); // Создадим картинку и инициализируем ее
-                    image.Stretch = Stretch.Fill;
+                    image.Stretch = Stretch.Fill; // На всякий случай
                     image.Height = 100;
                     image.Width = 100;
                     image.HorizontalAlignment = HorizontalAlignment.Left;
@@ -140,6 +141,7 @@ namespace Tagger.ViewModels
 
         public void ChangeImageSelection(Image image, Image mark)
         {
+
             string name = (string)image.Tag;
             bool isRequired = false;    // Флаг, проверяющий входит ли картинка в список требуемых (не просто ли это пометка)
 

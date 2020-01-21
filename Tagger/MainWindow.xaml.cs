@@ -54,6 +54,9 @@ namespace Tagger // Проверка ветви
             PathLabel.Text = path;
             Rescan();
         }
+
+
+        List<FileInfo> checkedImages = new List<FileInfo>();
         private void AddTagButton_Click(object sender, RoutedEventArgs e)
         {
             if (checkedPictures == 0)
@@ -81,20 +84,33 @@ namespace Tagger // Проверка ветви
         {
             try
             {
-                
-                checkedImages = Transfer.GetSearchedFiles();
-                TagListComboBox.Items.Clear();
                 files = FileProcessor.ScanDirectories(path, CheckBoxSubDirectory.IsChecked.Value);
-                List<FileInfo> filesToFind = new List<FileInfo>(checkedImages);
+
+                TagListComboBox.Items.Clear();
                 checkedImages.Clear();
-                foreach(var file in filesToFind)
+
+                //checkedImages = Transfer.GetSearchedFiles();
+
+                List<FileInfo> filesToFind = Transfer.GetSearchedFiles();
+
+                //checkedImages = Transfer.GetSearchedFiles(); // Версия Семёна
+                //TagListComboBox.Items.Clear();
+                //files = FileProcessor.ScanDirectories(path, CheckBoxSubDirectory.IsChecked.Value);
+                //List<FileInfo> filesToFind = new List<FileInfo>(checkedImages);
+                //checkedImages.Clear();
+
+                foreach (var file in filesToFind)
                     checkedImages.Add(files.Find(x => x.FullName.Split('%')[0].Contains(file.FullName.Split('.')[0].Split('%')[0])));
+
                 if (checkedImages == null)
                     System.Windows.MessageBox.Show("АТАТА!");
+
                 Transfer.PutSearchedFiles(checkedImages);
+
                 tags = FileProcessor.GetTagsFromDirectory(files);
                 foreach (var tag in tags)
                     TagListComboBox.Items.Add(tag);
+
                 checkedPictures = checkedImages.Count;
                 CheckedCount.Content = checkedPictures;
             }
@@ -163,6 +179,7 @@ namespace Tagger // Проверка ветви
         private void addTagKey(List<FileInfo> filesToTag)
         {
             Rescan();
+
             if (!(TextBoxTag.Text.Contains('%') || (TextBoxTag.Text == "")))
                 if(tagLibrary.Find(x=>x[1].Equals(TextBoxTag.Text))!=null)
                 {
@@ -170,6 +187,7 @@ namespace Tagger // Проверка ветви
                 }
             else
                 FileProcessor.AddTag(filesToTag, TextBoxTag.Text);
+
             Rescan();
         }
         private void PathLabel_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -228,7 +246,6 @@ namespace Tagger // Проверка ветви
             }
         }
 
-        List<FileInfo> checkedImages = new List<FileInfo>();
         private void testbutton_Click(object sender, RoutedEventArgs e)
         {
             //checkedImages = Transfer.GetSearchedFiles();
