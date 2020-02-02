@@ -57,7 +57,12 @@ namespace Tagger
         private void AddTagButton_Click(object sender, RoutedEventArgs e)
         {
             if (checkedPictures == 0)
+            {
+                Transfer.Clear();
+                Transfer.PutSearchedFiles(files);
                 addTagKey(files);
+                Transfer.Clear();
+            }
             else
                 addTagKey(checkedImages);
         }
@@ -81,7 +86,6 @@ namespace Tagger
         {
             try
             {
-                
                 checkedImages = Transfer.GetSearchedFiles();
                 TagListComboBox.Items.Clear();
                 files = FileProcessor.ScanDirectories(path, CheckBoxSubDirectory.IsChecked.Value);
@@ -166,7 +170,7 @@ namespace Tagger
             if (!(TextBoxTag.Text.Contains('%') || (TextBoxTag.Text == "")))
                 if(tagLibrary.Find(x=>x[1].Equals(TextBoxTag.Text))!=null)
                 {
-                    AddAll(TextBoxTag.Text, filesToTag);
+                    AddAll(TextBoxTag.Text);
                 }
             else
                 FileProcessor.AddTag(filesToTag, TextBoxTag.Text);
@@ -187,9 +191,14 @@ namespace Tagger
             Rescan();
             var selectedItem = BDBox.SelectedItem.ToString();
             if (checkedPictures == 0)
-                AddAll(selectedItem, files);
+            {
+                Transfer.Clear();
+                Transfer.PutSearchedFiles(files);
+                AddAll(selectedItem);
+                Transfer.Clear();
+            }
             else
-                AddAll(selectedItem, checkedImages);
+                AddAll(selectedItem);
         }
         private void AddToBDBut_Click(object sender, RoutedEventArgs e)
         {
@@ -202,10 +211,11 @@ namespace Tagger
             }
             else System.Windows.MessageBox.Show("Выберите предка!");
         }
-        private void AddAll(string tag, List<FileInfo> filesToTag)
+        private void AddAll(string tag)
         {
             var toUse = TagLib.TagsToWrite(tagLibrary, tag);
-            List<FileInfo> toTag = new List<FileInfo>(filesToTag);
+            Rescan();
+            List<FileInfo> toTag = new List<FileInfo>(checkedImages);
             foreach (var curTag in toUse)
             {
                 FileProcessor.AddTag(toTag, curTag);

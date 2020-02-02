@@ -67,10 +67,7 @@ namespace Tagger
                         sortedFiles = sortedFiles.FindAll(x => x.FullName.Contains(tag));
             }
             if (checkMarks.Count == 0)
-            {
-                grid.Children.Clear();
                 redraw();
-            }
         }
 
         protected List<string> checkedImages = new List<string>();
@@ -105,14 +102,13 @@ namespace Tagger
         {
             picturesInRow = (int)(window.Width-50) / 100;
             if (checkMarks.Count == 0)
-            {
-                grid.Children.Clear();
                 redraw();
-            }
+
         }
         private void redraw()
         {
             //files = FileProcessor.ScanDirectories(path, IsInnerDirectories.IsChecked.Value);
+            grid.Children.Clear();
             int lastLeftGrid = 0;
             int lastTopGrid = 0;
             int ImageNum = 0;
@@ -125,6 +121,8 @@ namespace Tagger
                     bitmapImage.BeginInit();
                     bitmapImage.UriSource = new Uri(cur.FullName, UriKind.Relative);
                     bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.DecodePixelWidth = 100;
+                    bitmapImage.DecodePixelHeight = 100;
                     bitmapImage.EndInit();
 
                     var image = new Image();
