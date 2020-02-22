@@ -277,5 +277,48 @@ namespace Tagger
             foreach (var tag in tags)
                 TagListComboBox.Items.Add(tag);
         }
+
+        private void RandomButton_Click(object sender, RoutedEventArgs e)
+        {
+            Rescan();
+            if (checkedPictures == 0)
+            {
+                Transfer.Clear();
+                Transfer.PutSearchedFiles(files);
+                RandomName(files);
+                Transfer.Clear();
+            }
+            else
+                RandomName(checkedImages);
+            Rescan();
+        }
+
+        private void RandomName(List<FileInfo> files)
+        {
+            foreach(var file in files)
+            {
+                var splittedName = file.FullName.Split('.');
+                var res = splittedName[splittedName.Length-1];
+                StringBuilder newname = new StringBuilder();
+                string chars = "1234567890qwertyuiopasdfghjklzxcvbnm";
+                newname.Append(file.DirectoryName+"\\");
+                for (int i = 0; i <= 10; i++)
+                {
+                    newname.Append(chars[rand.Next(0, 35)]);
+                }
+                newname.Append("."+res);
+                if (!File.Exists(newname.ToString()))
+                {
+                    file.CopyTo(newname.ToString());
+                    file.Delete();
+                }
+                else
+                {
+                    newname.Append("-1");
+                    file.CopyTo(newname.ToString());
+                    System.Windows.MessageBox.Show("УПС!");
+                }
+            }
+        }
     }
 }
